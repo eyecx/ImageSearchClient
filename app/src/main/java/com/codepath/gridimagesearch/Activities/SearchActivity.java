@@ -1,14 +1,18 @@
 package com.codepath.gridimagesearch.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,11 +37,11 @@ import java.util.ArrayList;
 
 public class SearchActivity extends ActionBarActivity {
 
-    private EditText etQuery;
     private GridView gvResults;
     private ArrayList<ImageResult> imageResults;
     private ImageResultsAdapter aImageResults;
-    private String query;
+    private String searchQuery;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,6 @@ public class SearchActivity extends ActionBarActivity {
     }
 
     private void setupViews() {
-        etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,14 +80,23 @@ public class SearchActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
-    }
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                onSearchAPICall(0, true);
+                return true;
+            }
 
-    public void onImageSearch (View v) {
-        query = etQuery.getText().toString();
-        onSearchAPICall(0, true);
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void onSearchAPICall(int page, final boolean shouldClearAdapter) {
@@ -99,7 +111,7 @@ public class SearchActivity extends ActionBarActivity {
         Uri.Builder builder = Uri.parse(searchUrl).buildUpon();
         builder.appendQueryParameter("v", "1.0");
         builder.appendQueryParameter("rsz", "8");
-        builder.appendQueryParameter("q", query);
+        builder.appendQueryParameter("q", searchQuery);
         builder.appendQueryParameter("start", Integer.toString(page));
         builder.appendQueryParameter("imgsz", imageSizePref);
         builder.appendQueryParameter("imgcolor", imageColorPref);
