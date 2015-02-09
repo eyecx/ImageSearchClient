@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="image_size"
+        android:title="@string/pref_title_image_size"
+        android:entries="@array/pref_image_size_titles"
+        android:entryValues="@array/pref_image_size_values"
+        android:defaultValue="small"
+        />
+    <ListPreference
+        android:key="image_color"
+        android:title="@string/pref_title_image_color"
+        android:entries="@array/pref_image_color_titles"
+        android:entryValues="@array/pref_image_color_values"
+        android:defaultValue=""
+        />
+    <ListPreference
+        android:key="image_type"
+        android:title="@string/pref_title_image_type"
+        android:entries="@array/pref_image_type_titles"
+        android:entryValues="@array/pref_image_type_values"
+        android:defaultValue=""
+        />
+    <EditTextPreference
+        android:key="search_site"
+        android:title="Site to Search"
+        android:defaultValue=""
+        android:summary="Set a site to search"
+        />
+</PreferenceScreen>
